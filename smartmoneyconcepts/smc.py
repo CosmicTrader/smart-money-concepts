@@ -4,6 +4,7 @@ import numpy as np
 from pandas import DataFrame, Series
 from datetime import datetime
 
+
 def inputvalidator(input_="ohlc"):
     def dfcheck(func):
         @wraps(func)
@@ -539,12 +540,12 @@ class smc:
         """
 
         if isinstance(ohlc.index, pd.DatetimeIndex):
-            rename_col=None
-            if ohlc.index.name != 'date':
+            rename_col = None
+            if ohlc.index.name != "date":
                 rename_col = ohlc.index.name
             ohlc.reset_index(inplace=True)
             if rename_col is not None:
-                ohlc.rename(columns={rename_col:'date'}, inplace=True)
+                ohlc.rename(columns={rename_col: "date"}, inplace=True)
 
         _high_low = shl["HighLow"].values
         _dates = ohlc["date"].values.astype("datetime64[ns]")
@@ -956,23 +957,25 @@ class smc:
         broken_high = np.zeros(len(ohlc), dtype=np.int32)
         broken_low = np.zeros(len(ohlc), dtype=np.int32)
 
-        resampled_ohlc = ohlc.resample(time_frame).agg(
-            {
-                "open": "first",
-                "high": "max",
-                "low": "min",
-                "close": "last",
-                "volume": "sum",
-            }
-        ).dropna()
+        resampled_ohlc = (
+            ohlc.resample(time_frame)
+            .agg(
+                {
+                    "open": "first",
+                    "high": "max",
+                    "low": "min",
+                    "close": "last",
+                    "volume": "sum",
+                }
+            )
+            .dropna()
+        )
 
         currently_broken_high = False
         currently_broken_low = False
         last_broken_time = None
         for i in range(len(ohlc)):
-            resampled_previous_index = np.where(
-                resampled_ohlc.index < ohlc.index[i]
-            )[0]
+            resampled_previous_index = np.where(resampled_ohlc.index < ohlc.index[i])[0]
             if len(resampled_previous_index) <= 1:
                 previous_high[i] = np.nan
                 previous_low[i] = np.nan
@@ -984,10 +987,14 @@ class smc:
                 currently_broken_low = False
                 last_broken_time = resampled_previous_index
 
-            previous_high[i] = resampled_ohlc["high"].iloc[resampled_previous_index] 
+            previous_high[i] = resampled_ohlc["high"].iloc[resampled_previous_index]
             previous_low[i] = resampled_ohlc["low"].iloc[resampled_previous_index]
-            currently_broken_high = ohlc["high"].iloc[i] > previous_high[i] or currently_broken_high
-            currently_broken_low = ohlc["low"].iloc[i] < previous_low[i] or currently_broken_low
+            currently_broken_high = (
+                ohlc["high"].iloc[i] > previous_high[i] or currently_broken_high
+            )
+            currently_broken_low = (
+                ohlc["low"].iloc[i] < previous_low[i] or currently_broken_low
+            )
             broken_high[i] = 1 if currently_broken_high else 0
             broken_low[i] = 1 if currently_broken_low else 0
 

@@ -13,6 +13,7 @@ from PIL import Image
 sys.path.append(os.path.abspath("../"))
 from smartmoneyconcepts.smc import smc
 
+
 def add_FVG(fig, df, fvg_data):
     for i in range(len(fvg_data["FVG"])):
         if not np.isnan(fvg_data["FVG"][i]):
@@ -43,7 +44,7 @@ def add_FVG(fig, df, fvg_data):
                     mode="text",
                     text="FVG",
                     textposition="middle center",
-                    textfont=dict(color='rgba(255, 255, 255, 0.4)', size=8),
+                    textfont=dict(color="rgba(255, 255, 255, 0.4)", size=8),
                 )
             )
     return fig
@@ -99,7 +100,11 @@ def add_bos_choch(fig, df, bos_choch_data):
                     y=[mid_y],
                     mode="text",
                     text="BOS",
-                    textposition="top center" if bos_choch_data["BOS"][i] == 1 else "bottom center",
+                    textposition=(
+                        "top center"
+                        if bos_choch_data["BOS"][i] == 1
+                        else "bottom center"
+                    ),
                     textfont=dict(color="rgba(255, 165, 0, 0.4)", size=8),
                 )
             )
@@ -123,7 +128,11 @@ def add_bos_choch(fig, df, bos_choch_data):
                     y=[mid_y],
                     mode="text",
                     text="CHOCH",
-                    textposition="top center" if bos_choch_data["CHOCH"][i] == 1 else "bottom center",
+                    textposition=(
+                        "top center"
+                        if bos_choch_data["CHOCH"][i] == 1
+                        else "bottom center"
+                    ),
                     textfont=dict(color="rgba(0, 0, 255, 0.4)", size=8),
                 )
             )
@@ -251,7 +260,11 @@ def add_liquidity(fig, df, liquidity_data):
                     y=[liquidity_data["Level"][i]],
                     mode="text",
                     text="Liquidity",
-                    textposition="top center" if liquidity_data["Liquidity"][i] == 1 else "bottom center",
+                    textposition=(
+                        "top center"
+                        if liquidity_data["Liquidity"][i] == 1
+                        else "bottom center"
+                    ),
                     textfont=dict(color="rgba(255, 165, 0, 0.4)", size=8),
                 )
             )
@@ -292,7 +305,11 @@ def add_liquidity(fig, df, liquidity_data):
                     y=[mid_y],
                     mode="text",
                     text="Liquidity Swept",
-                    textposition="top center" if liquidity_data["Liquidity"][i] == 1 else "bottom center",
+                    textposition=(
+                        "top center"
+                        if liquidity_data["Liquidity"][i] == 1
+                        else "bottom center"
+                    ),
                     textfont=dict(color="rgba(255, 0, 0, 0.4)", size=8),
                 )
             )
@@ -307,22 +324,26 @@ def add_previous_high_low(fig, df, previous_high_low_data):
     high_levels = []
     high_indexes = []
     for i in range(len(high)):
-        if not np.isnan(high[i]) and high[i] != (high_levels[-1] if len(high_levels) > 0 else None):
+        if not np.isnan(high[i]) and high[i] != (
+            high_levels[-1] if len(high_levels) > 0 else None
+        ):
             high_levels.append(high[i])
             high_indexes.append(i)
 
-    low_levels = [] 
+    low_levels = []
     low_indexes = []
     for i in range(len(low)):
-        if not np.isnan(low[i]) and low[i] != (low_levels[-1] if len(low_levels) > 0 else None):
+        if not np.isnan(low[i]) and low[i] != (
+            low_levels[-1] if len(low_levels) > 0 else None
+        ):
             low_levels.append(low[i])
             low_indexes.append(i)
 
     # plot these lines on a graph
-    for i in range(len(high_indexes)-1):
+    for i in range(len(high_indexes) - 1):
         fig.add_trace(
             go.Scatter(
-                x=[df.index[high_indexes[i]], df.index[high_indexes[i+1]]],
+                x=[df.index[high_indexes[i]], df.index[high_indexes[i + 1]]],
                 y=[high_levels[i], high_levels[i]],
                 mode="lines",
                 line=dict(
@@ -332,7 +353,7 @@ def add_previous_high_low(fig, df, previous_high_low_data):
         )
         fig.add_trace(
             go.Scatter(
-                x=[df.index[high_indexes[i+1]]],
+                x=[df.index[high_indexes[i + 1]]],
                 y=[high_levels[i]],
                 mode="text",
                 text="PH",
@@ -341,10 +362,10 @@ def add_previous_high_low(fig, df, previous_high_low_data):
             )
         )
 
-    for i in range(len(low_indexes)-1):
+    for i in range(len(low_indexes) - 1):
         fig.add_trace(
             go.Scatter(
-                x=[df.index[low_indexes[i]], df.index[low_indexes[i+1]]],
+                x=[df.index[low_indexes[i]], df.index[low_indexes[i + 1]]],
                 y=[low_levels[i], low_levels[i]],
                 mode="lines",
                 line=dict(
@@ -354,7 +375,7 @@ def add_previous_high_low(fig, df, previous_high_low_data):
         )
         fig.add_trace(
             go.Scatter(
-                x=[df.index[low_indexes[i+1]]],
+                x=[df.index[low_indexes[i + 1]]],
                 y=[low_levels[i]],
                 mode="text",
                 text="PL",
@@ -367,7 +388,7 @@ def add_previous_high_low(fig, df, previous_high_low_data):
 
 
 def add_sessions(fig, df, sessions):
-    for i in range(len(sessions["Active"])-1):
+    for i in range(len(sessions["Active"]) - 1):
         if sessions["Active"][i] == 1:
             fig.add_shape(
                 type="rect",
@@ -439,6 +460,7 @@ def import_data(symbol, start_str, timeframe):
 
 df = import_data("BTCUSDT", "2024-04-01", "15m")
 df = df.iloc[-500:]
+
 
 def fig_to_buffer(fig):
     fig_bytes = fig.to_image(format="png")

@@ -16,6 +16,7 @@ df = pd.read_csv(os.path.join("test_data", test_instrument, instrument_data))
 df["Date"] = pd.to_datetime(df["Date"])
 df = df.set_index("Date")
 
+
 class TestSmartMoneyConcepts(unittest.TestCase):
     # to test each function in the smartmoneyconcepts package
     # each function will be called and the result will be compared to the result data
